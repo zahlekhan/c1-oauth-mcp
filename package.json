@@ -10,7 +10,9 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@crayonai/react-ui": "^0.8.42",
     "@modelcontextprotocol/sdk": "^1.0.0",
+    "@thesysai/genui-sdk": "^0.6.40",
     "@types/openid-client": "^3.1.6",
     "clsx": "^2.0.0",
     "openai": "^4.20.0",

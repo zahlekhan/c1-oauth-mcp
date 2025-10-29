@@ -35,6 +35,7 @@ function mcpToolsToOpenAITools(mcpTools: MCPTool[]): ChatCompletionTool[] {
  */
 export function createOpenAIClient(apiKey: string): OpenAI {
     return new OpenAI({
+        baseURL: 'https://api.thesys.dev/v1/embed',
         apiKey,
         dangerouslyAllowBrowser: true, // Required for client-side usage
     });
@@ -181,7 +182,7 @@ export async function* streamChatCompletion(
     });
 
     const stream = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: 'c1/openai/gpt-5/v-20250930',
         messages: conversationMessages,
         tools: tools.length > 0 ? tools : undefined,
         stream: true,

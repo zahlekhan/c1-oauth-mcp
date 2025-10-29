@@ -1,5 +1,6 @@
 import { type Message } from '@/lib/openai-client';
 import { useRef } from 'react';
+import { C1Component } from '@thesysai/genui-sdk';
 
 interface MessageBubbleProps {
     message: Message;
@@ -27,7 +28,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                         </div>
                     )}
                     {message.content && (
-                        <p className="whitespace-pre-wrap">{message.content}</p>
+                        <C1Component c1Response={message.content} isStreaming={true} />
                     )}
                 </div>
             </div>

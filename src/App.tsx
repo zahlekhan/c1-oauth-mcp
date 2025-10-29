@@ -5,6 +5,7 @@ import { ChatInput } from '@/components/ChatInput';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { AuthCallback } from '@/components/AuthCallback';
 import { createOpenAIClient, getAvailableTools, streamChatCompletion, type Message } from '@/lib/openai-client';
+import { ThemeProvider } from '@thesysai/genui-sdk';
 
 
 function ChatView({
@@ -164,58 +165,60 @@ function App() {
     };
 
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <div className="flex h-screen bg-gray-50">
-                            {/* Sidebar */}
-                            <div className="w-80 border-r border-gray-200 bg-white overflow-y-auto">
-                                <div className="p-4 border-b border-gray-200">
-                                    <h1 className="text-xl font-bold">MCP Chat</h1>
-                                    <button
-                                        onClick={() => setShowSettings(!showSettings)}
-                                        className="mt-2 text-sm text-blue-600 hover:underline"
-                                    >
-                                        {showSettings ? 'Hide' : 'Show'} Settings
-                                    </button>
+        <ThemeProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route
+                        path="/"
+                        element={
+                            <div className="flex h-screen bg-gray-50">
+                                {/* Sidebar */}
+                                <div className="w-80 border-r border-gray-200 bg-white overflow-y-auto">
+                                    <div className="p-4 border-b border-gray-200">
+                                        <h1 className="text-xl font-bold">MCP Chat</h1>
+                                        <button
+                                            onClick={() => setShowSettings(!showSettings)}
+                                            className="mt-2 text-sm text-blue-600 hover:underline"
+                                        >
+                                            {showSettings ? 'Hide' : 'Show'} Settings
+                                        </button>
+                                    </div>
+                                    {showSettings && (
+                                        <SettingsPanel
+                                            openaiApiKey={openaiApiKey}
+                                            mcpServerUrl={mcpServerUrl}
+                                            onOpenAIKeyChange={(key) => {
+                                                setOpenAIKey(key);
+                                                if (key) {
+                                                    localStorage.setItem('openai_api_key', key);
+                                                } else {
+                                                    localStorage.removeItem('openai_api_key');
+                                                }
+                                            }}
+                                            onMCPConfigChange={handleMCPConfigChange}
+                                        />
+                                    )}
                                 </div>
-                                {showSettings && (
-                                    <SettingsPanel
+
+                                {/* Main Chat Area */}
+                                <div className="flex-1 flex flex-col relative">
+                                    <ChatView
                                         openaiApiKey={openaiApiKey}
                                         mcpServerUrl={mcpServerUrl}
-                                        onOpenAIKeyChange={(key) => {
-                                            setOpenAIKey(key);
-                                            if (key) {
-                                                localStorage.setItem('openai_api_key', key);
-                                            } else {
-                                                localStorage.removeItem('openai_api_key');
-                                            }
-                                        }}
-                                        onMCPConfigChange={handleMCPConfigChange}
+                                        messages={messages}
+                                        onMessagesChange={setMessages}
+                                        isAssistantThinking={isAssistantThinking}
+                                        onThinkingChange={setIsAssistantThinking}
                                     />
-                                )}
+                                </div>
                             </div>
-
-                            {/* Main Chat Area */}
-                            <div className="flex-1 flex flex-col relative">
-                                <ChatView
-                                    openaiApiKey={openaiApiKey}
-                                    mcpServerUrl={mcpServerUrl}
-                                    messages={messages}
-                                    onMessagesChange={setMessages}
-                                    isAssistantThinking={isAssistantThinking}
-                                    onThinkingChange={setIsAssistantThinking}
-                                />
-                            </div>
-                        </div>
-                    }
-                />
-                <Route path="/oauth/callback" element={<AuthCallback />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-        </BrowserRouter>
+                        }
+                    />
+                    <Route path="/oauth/callback" element={<AuthCallback />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </BrowserRouter>
+        </ThemeProvider>
     );
 }
 
